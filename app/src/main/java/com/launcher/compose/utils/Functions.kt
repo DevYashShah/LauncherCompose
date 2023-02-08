@@ -1,7 +1,9 @@
 package com.launcher.compose.utils
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import com.launcher.compose.data.models.ApplicationListData
@@ -23,3 +25,12 @@ fun loadApps(packageManager: PackageManager): List<ApplicationListData> {
     loadList.sortBy { it.appName.toString() }
     return loadList
 }
+
+val Context.isMyLauncherDefault: Boolean
+    get() = ArrayList<ComponentName>().apply {
+        packageManager.getPreferredActivities(
+            arrayListOf(IntentFilter(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_HOME) }),
+            this,
+            packageName
+        )
+    }.isNotEmpty()
